@@ -14,9 +14,21 @@ export default defineConfig(({ mode }) => {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
       },
+      base: '/Boticare-Patient/',
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
+        }
+      },
+      test: {
+        globals: true,
+        environment: 'jsdom',
+        coverage: {
+          provider: 'v8',
+          reporter: ['text', 'lcov'],
+          all: true,
+          include: ['**/*.{ts,tsx}'],
+          exclude: ['node_modules', '.git', 'dist', 'coverage']
         }
       }
     };

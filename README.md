@@ -20,3 +20,16 @@ View your app in AI Studio: https://ai.studio/apps/drive/18PterxfW9qknA-lF9Bt1Ub
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+## Testing and Coverage
+
+- Run tests: `npm run test`
+- Run coverage: `npm run coverage`
+
+The GitHub Actions workflow runs tests and coverage on every push and pull request.
+
+## Deployment
+
+This repository is configured to deploy the built app to GitHub Pages automatically from `main`.
+
+Published site: `https://nigelzara.github.io/Boticare-Patient/`
