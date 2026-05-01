@@ -1,15 +1,21 @@
-
 import { createClient } from '@supabase/supabase-js';
 
 // Configuration for Supabase
-// The URL and Key are embedded directly as requested.
-const supabaseUrl = 'https://gzsgxutwrvqsaefbwlda.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6c2d4dXR3cnZxc2FlZmJ3bGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNDQ2NDIsImV4cCI6MjA4NTYyMDY0Mn0.IG6evi2-ECMoaaXVFzdZsDsSshCwpEhLfzJaEPzdPSM';
+// Using environment variables for better security and flexibility
+let supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Sanitize URL: Remove trailing slash and /rest/v1 if present
+supabaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.error("Supabase credentials missing! Ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in .env.local");
+}
 
 // Create a single supabase client for interacting with your database
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Helper to check if Supabase is configured
 export const isSupabaseConfigured = (): boolean => {
-    return !!supabase;
+    return !!supabaseUrl && !!supabaseAnonKey;
 };
