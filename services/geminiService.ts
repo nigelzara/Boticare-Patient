@@ -3,13 +3,16 @@ import { GoogleGenAI, Modality, GenerateContentResponse, Part } from "@google/ge
 import { Appointment, ChatMessage, AvailabilitySlot, PrescriptionRefillRequest } from "../types";
 import { supabase } from "./supabaseClient"; // Import supabase
 
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
-if (!apiKey) {
-  console.warn("VITE_GEMINI_API_KEY environment variable not set. AI features may be unavailable.");
-}
-
-const ai = new GoogleGenAI({ apiKey: apiKey || '' });
+let aiInstance: GoogleGenAI | null = null;
+const getAI = (): GoogleGenAI => {
+  if (aiInstance) return aiInstance;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY in your environment.");
+  }
+  aiInstance = new GoogleGenAI({ apiKey });
+  return aiInstance;
+};
 
 interface GroundingOptions {
     useSearch?: boolean;
@@ -49,7 +52,7 @@ export const getAIResponse = async (userMessage: string, imagePart: Part | null,
     }
 
     // Updated to gemini-3-flash-preview for general text tasks
-    const response: GenerateContentResponse = await ai.models.generateContent({
+    const response: GenerateContentResponse = await getAI().models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: contents,
       ...(tools.length > 0 && { config: { tools }, ...(Object.keys(toolConfig).length > 0 && { toolConfig }) }),
@@ -96,7 +99,7 @@ User is typing: "${inputText}"
 
 Provide suggestions as a single, comma-separated string. Example: is normal,about my medication,the side effects are,I feel dizzy when`;
 
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: 'gemini-flash-lite-latest',
       contents: { parts: [{ text: prompt }] },
     });
@@ -124,7 +127,7 @@ export const getAppointmentSummary = async (appointment: Appointment): Promise<s
     The summary should cover key discussion points, diagnoses, treatment plans, and next steps, in an easy-to-understand format for the patient.`;
 
     // Updated to gemini-3-flash-preview
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: { parts: [{ text: prompt }] },
     });
@@ -137,7 +140,7 @@ export const getAppointmentSummary = async (appointment: Appointment): Promise<s
 
 export const editImage = async (base64ImageData: string, mimeType: string, prompt: string): Promise<string | null> => {
     try {
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash-image',
             contents: {
                 parts: [
@@ -224,7 +227,7 @@ export const analyzeVideo = async (videoFile: File, prompt: string): Promise<str
         }));
 
         // Updated to gemini-3-pro-preview for complex multimodal analysis
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-3-pro-preview',
             contents: { parts: [...frameParts, { text: prompt }] },
         });
@@ -238,7 +241,7 @@ export const analyzeVideo = async (videoFile: File, prompt: string): Promise<str
 
 export const generateSpeech = async (text: string): Promise<string | null> => {
     try {
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: "gemini-2.5-flash-preview-tts",
             contents: [{ parts: [{ text }] }],
             config: {
@@ -271,7 +274,7 @@ Patient Data:
 Generate a detailed report.`;
 
         // Updated to gemini-3-pro-preview
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-3-pro-preview',
             contents: { parts: [{ text: prompt }] },
             config: {
