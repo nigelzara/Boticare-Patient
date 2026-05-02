@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { getAIResponse, getWordSuggestions, generateSpeech, editImage, analyzeVideo } from '../services/geminiService';
+import { getAIResponse, getWordSuggestions, generateSpeech, editImage, analyzeVideo, getAI } from '../services/geminiService';
 import { ChatMessage, UserProfile } from '../types';
 import { SendIcon, MicIcon, ThumbsUpIcon, ThumbsDownIcon, CopyIcon, TrashIcon, CheckCircleIcon, XIcon, PlusIcon, SpeakerIcon, MicOffIcon, EditIcon, CameraIcon, ImageIcon, FileIcon } from './Icons';
 import { GoogleGenAI, LiveServerMessage, Modality, Blob, Part } from "@google/genai";
@@ -68,7 +68,7 @@ const createBlob = (data: Float32Array): Blob => {
 }
 
 const MAX_CHARS = 1000;
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// AI initialization handled lazily via getAI() from geminiService
 const outputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 let nextStartTime = 0;
 
@@ -96,7 +96,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
   
   // Live API State
   const [isLiveSessionActive, setIsLiveSessionActive] = useState(false);
-  const sessionPromiseRef = useRef<ReturnType<typeof ai.live.connect> | null>(null);
+  const sessionPromiseRef = useRef<ReturnType<ReturnType<typeof getAI>['live']['connect']> | null>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
@@ -315,6 +315,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
   };
   
   const stopLiveSession = useCallback(() => {
+    /* 
     if (sessionPromiseRef.current) {
         sessionPromiseRef.current.then(session => session.close());
         sessionPromiseRef.current = null;
@@ -333,9 +334,12 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
     }
     setIsLiveSessionActive(false);
     setInput('');
+    */
+    console.log("Live session is currently disabled for security.");
   }, []);
 
   const startLiveSession = useCallback(async () => {
+    /*
     if (isLiveSessionActive) {
         stopLiveSession();
         return;
@@ -347,8 +351,8 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
     let currentInputTranscription = '';
     let currentOutputTranscription = '';
 
-    sessionPromiseRef.current = ai.live.connect({
-        model: 'gemini-2.5-flash-native-audio-preview-12-2025',
+    sessionPromiseRef.current = getAI().live.connect({
+        model: 'gemini-2.5-flash-lite',
         callbacks: {
             onopen: async () => {
                 inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
@@ -422,6 +426,8 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
             outputAudioTranscription: {},
         },
     });
+    */
+    alert("Live voice feature is currently disabled for security. We are working on a secure implementation.");
   }, [isLiveSessionActive, stopLiveSession]);
 
   const AttachmentMenu = () => (
