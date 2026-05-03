@@ -1,12 +1,11 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { getAIResponse, getWordSuggestions, generateSpeech, editImage, analyzeVideo, getAI } from '../services/geminiService';
+import { getAIResponse, getWordSuggestions, generateSpeech, editImage, analyzeVideo } from '../services/geminiService';
 import { ChatMessage, UserProfile } from '../types';
 import { SendIcon, MicIcon, ThumbsUpIcon, ThumbsDownIcon, CopyIcon, TrashIcon, CheckCircleIcon, XIcon, PlusIcon, SpeakerIcon, MicOffIcon, EditIcon, CameraIcon, ImageIcon, FileIcon } from './Icons';
-import { GoogleGenAI, LiveServerMessage, Modality, Blob, Part } from "@google/genai";
 
 // General Helper
-const fileToGenerativePart = async (file: File): Promise<Part> => {
+const fileToGenerativePart = async (file: File): Promise<any> => {
     const base64EncodedDataPromise = new Promise<string>((resolve) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
@@ -55,7 +54,7 @@ const decodeAudioData = async (data: Uint8Array, ctx: AudioContext, sampleRate: 
   return buffer;
 };
 
-const createBlob = (data: Float32Array): Blob => {
+const createBlob = (data: Float32Array): any => {
   const l = data.length;
   const int16 = new Int16Array(l);
   for (let i = 0; i < l; i++) {
@@ -96,7 +95,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
   
   // Live API State
   const [isLiveSessionActive, setIsLiveSessionActive] = useState(false);
-  const sessionPromiseRef = useRef<ReturnType<ReturnType<typeof getAI>['live']['connect']> | null>(null);
+  const sessionPromiseRef = useRef<any>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);

@@ -164,6 +164,14 @@ export interface UserProfile {
     professionalTitle?: ProfessionalTitle;
     specialty?: string;
     supabaseId?: string;
+    height?: string;
+    weight?: string;
+    bloodType?: string;
+    medicalHistory?: string;
+    medicationsList?: string;
+    emergencyContactName?: string;
+    emergencyContactPhone?: string;
+    onboardingCompleted?: boolean;
 }
 
 export interface BoticareNotification {

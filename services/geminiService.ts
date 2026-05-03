@@ -128,9 +128,8 @@ export const editImage = async (base64ImageData: string, mimeType: string, promp
             }],
         });
         
-        // This part needs careful handling on the backend if we want to return images
-        // For now, assume it returns text or a description
-        return result.text || null;
+        // The backend now returns an 'image' object if the AI generated one
+        return result.image?.data || result.text || null;
     } catch (error) {
         console.error("Error editing image:", error);
         return null;
@@ -182,10 +181,8 @@ Generate a detailed report.`;
     }
 };
 
-// --- Mock/Helper for the frontend components that still expect getAI ---
-export const getAI = () => {
-    throw new Error("Direct AI access is disabled for security. Use the exported service functions instead.");
-};
+// Direct AI access is disabled for security. Use the exported service functions instead.
+// The frontend should NOT import from @google/genai directly.
 
 // --- Supabase Interaction Functions ---
 export const getProfessionalAvailability = async (professionalId: string): Promise<AvailabilitySlot[]> => {

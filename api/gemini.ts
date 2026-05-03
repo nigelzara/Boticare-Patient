@@ -29,7 +29,8 @@ export default async function handler(req: any, res: any) {
         
         result = { 
             text: response.text, 
-            groundingMetadata: response.candidates?.[0]?.groundingMetadata 
+            groundingMetadata: response.candidates?.[0]?.groundingMetadata,
+            image: response.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData
         };
         break;
 

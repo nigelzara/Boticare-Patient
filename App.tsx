@@ -12,6 +12,7 @@ import Settings from './components/Settings';
 import HelpSupport from './components/HelpSupport';
 import VideoCall from './components/VideoCall';
 import Auth from './components/Auth';
+import HealthProfileSetup from './components/HealthProfileSetup';
 import { supabase } from './services/supabaseClient';
 import { Page, Professional, UserProfile, BoticareNotification, Patient, Appointment } from './types';
 
@@ -22,6 +23,7 @@ const App: React.FC = () => {
   const [chatRecipient, setChatRecipient] = useState<Patient | Professional | UserProfile | null>(null);
   const [videoCallAppointment, setVideoCallAppointment] = useState<Appointment | null>(null);
   const [notifications, setNotifications] = useState<BoticareNotification[]>([]);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
   
   const [userProfile, setUserProfile] = useState<UserProfile>({
     name: 'Loading...',
@@ -67,10 +69,19 @@ const App: React.FC = () => {
                 phone: data.phone || '',
                 avatar: data.avatar_url || 'https://i.pravatar.cc/150?u=default',
                 role: 'patient',
-                supabaseId: data.id 
+                supabaseId: data.id,
+                height: data.height,
+                weight: data.weight,
+                bloodType: data.blood_type,
+                medicalHistory: data.medical_history,
+                medicationsList: data.medications_list,
+                emergencyContactName: data.emergency_contact_name,
+                emergencyContactPhone: data.emergency_contact_phone,
+                onboardingCompleted: data.onboarding_completed
             });
         }
     } catch (err) { console.error("Profile fetch error", err); }
+    finally { setIsProfileLoading(false); }
   };
 
   const handleUpdateProfile = async (updatedProfile: UserProfile) => {
@@ -123,6 +134,25 @@ const App: React.FC = () => {
 
   if (!session) {
     return <div className="bg-white text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-200"><Auth /></div>;
+  }
+
+  if (isProfileLoading) {
+      return (
+          <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+      );
+  }
+
+  if (userProfile.onboardingCompleted === false) {
+    return (
+      <div className="bg-boticare-gray text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-200">
+        <HealthProfileSetup 
+          userProfile={userProfile} 
+          onComplete={(updated) => setUserProfile(updated)} 
+        />
+      </div>
+    );
   }
 
   const renderPatientPage = () => {

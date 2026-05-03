@@ -52,16 +52,16 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-8">
+      <div className="max-w-md w-full space-y-6 md:space-y-8 bg-white dark:bg-gray-800 p-5 md:p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
         <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/30 dark:to-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-600 dark:from-blue-400 dark:to-teal-400">B</span>
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/30 dark:to-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-600 dark:from-blue-400 dark:to-teal-400">B</span>
             </div>
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
             {isSignUp ? 'Create Patient Account' : 'Welcome Back'}
           </h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-xs md:text-sm text-gray-600 dark:text-gray-400">
             {isSignUp 
                 ? 'Start your health journey today' 
                 : 'Sign in to access your health dashboard'}

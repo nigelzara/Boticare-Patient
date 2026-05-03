@@ -12,7 +12,15 @@ create table if not exists public.profiles (
   phone text,
   role text default 'patient', -- 'patient' or 'professional'
   professional_title text, -- 'Doctor' or 'Pharmacist'
-  specialty text
+  specialty text,
+  height text,
+  weight text,
+  blood_type text,
+  medical_history text,
+  medications_list text,
+  emergency_contact_name text,
+  emergency_contact_phone text,
+  onboarding_completed boolean default false
 );
 
 -- Appointments and Clinical Schedule
